@@ -5,53 +5,19 @@ use crate::{
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NtpPacketHeader {
-    leap_indicator: Leap,
-    version_number: Version,
-    mode: Mode,
-    stratum: Stratum,
-    poll: Poll,
-    precision: Precision,
-    rootdelay: NtpShort,
-    rootdisp: NtpShort,
-    refid: RefId,
-    reftime: NtpTimestamp,
-    org: NtpTimestamp,
-    rec: NtpTimestamp,
-    xmt: NtpTimestamp,
-}
-
-impl NtpPacketHeader {
-    pub fn new(
-        leap_indicator: Leap,
-        version_number: Version,
-        mode: Mode,
-        stratum: Stratum,
-        poll: Poll,
-        precision: Precision,
-        rootdelay: NtpShort,
-        rootdisp: NtpShort,
-        refid: RefId,
-        reftime: NtpTimestamp,
-        org: NtpTimestamp,
-        rec: NtpTimestamp,
-        xmt: NtpTimestamp,
-    ) -> Self {
-        Self {
-            leap_indicator,
-            version_number,
-            mode,
-            stratum,
-            poll,
-            precision,
-            rootdelay,
-            rootdisp,
-            refid,
-            reftime,
-            org,
-            rec,
-            xmt,
-        }
-    }
+    pub leap_indicator: Leap,
+    pub version_number: Version,
+    pub mode: Mode,
+    pub stratum: Stratum,
+    pub poll: Poll,
+    pub precision: Precision,
+    pub rootdelay: NtpShort,
+    pub rootdisp: NtpShort,
+    pub refid: RefId,
+    pub reftime: NtpTimestamp,
+    pub org: NtpTimestamp,
+    pub rec: NtpTimestamp,
+    pub xmt: NtpTimestamp,
 }
 
 impl TryWriteToBytes for NtpPacketHeader {
@@ -159,21 +125,21 @@ mod tests {
 
     #[test]
     fn write_packet_header_zeros_to_bytes() {
-        let packet = NtpPacketHeader::new(
-            NTP_LEAP_NO_WARNING, //leap_indicator,
-            NTP_VERSION_4,
-            NTP_MODE_CLIENT,
-            Stratum::from(0),
-            Poll::from(0),
-            Precision::from(0),
-            NtpShort::new(0, 0),       //rootdelay
-            NtpShort::new(0, 0),       //rootdisp
-            RefId::from([0, 0, 0, 0]), //refid,
-            NtpTimestamp::new(0, 0),   // reftime,
-            NtpTimestamp::new(0, 0),   //org
-            NtpTimestamp::new(0, 0),   //rec
-            NtpTimestamp::new(0, 0),   //xmt
-        );
+        let packet = NtpPacketHeader {
+            leap_indicator: NTP_LEAP_NO_WARNING,
+            version_number: NTP_VERSION_4,
+            mode: NTP_MODE_CLIENT,
+            stratum: Stratum::from(0),
+            poll: Poll::from(0),
+            precision: Precision::from(0),
+            rootdelay: NtpShort::new(0, 0),
+            rootdisp: NtpShort::new(0, 0),
+            refid: RefId::from([0, 0, 0, 0]),
+            reftime: NtpTimestamp::new(0, 0),
+            org: NtpTimestamp::new(0, 0),
+            rec: NtpTimestamp::new(0, 0),
+            xmt: NtpTimestamp::new(0, 0),
+        };
 
         let mut buffer = [0u8; 1024];
         let serialized_size = packet.try_write_to_bytes(&mut buffer).unwrap();
@@ -197,21 +163,21 @@ mod tests {
 
     #[test]
     fn write_packet_header_different_information_to_bytes() {
-        let packet = NtpPacketHeader::new(
-            NTP_LEAP_NO_WARNING, //leap_indicator,
-            NTP_VERSION_4,
-            NTP_MODE_CLIENT,
-            Stratum::from(1),
-            Poll::from(6),
-            Precision::from(-18),
-            NtpShort::new(1, 0),         //rootdelay
-            NtpShort::new(0, 100),       //rootdisp
-            RefId::from([1, 2, 3, 4]),   //refid,
-            NtpTimestamp::new(100, 500), // reftime,
-            NtpTimestamp::new(200, 200), //org
-            NtpTimestamp::new(50, 100),  //rec
-            NtpTimestamp::new(10, 1000), //xmt
-        );
+        let packet = NtpPacketHeader {
+            leap_indicator: NTP_LEAP_NO_WARNING,
+            version_number: NTP_VERSION_4,
+            mode: NTP_MODE_CLIENT,
+            stratum: Stratum::from(1),
+            poll: Poll::from(6),
+            precision: Precision::from(-18),
+            rootdelay: NtpShort::new(1, 0),
+            rootdisp: NtpShort::new(0, 100),
+            refid: RefId::from([1, 2, 3, 4]),
+            reftime: NtpTimestamp::new(100, 500),
+            org: NtpTimestamp::new(200, 200),
+            rec: NtpTimestamp::new(50, 100),
+            xmt: NtpTimestamp::new(10, 1000),
+        };
 
         let mut buffer = [0u8; 1024];
         let serialized_size = packet.try_write_to_bytes(&mut buffer).unwrap();
@@ -252,21 +218,21 @@ mod tests {
 
         let (packet, _) = NtpPacketHeader::try_read_from_bytes(&bytes).unwrap();
 
-        let expected = NtpPacketHeader::new(
-            NTP_LEAP_NO_WARNING, //leap_indicator,
-            NTP_VERSION_4,
-            NTP_MODE_CLIENT,
-            Stratum::from(0),
-            Poll::from(0),
-            Precision::from(0),
-            NtpShort::new(0, 0),       //rootdelay
-            NtpShort::new(0, 0),       //rootdisp
-            RefId::from([0, 0, 0, 0]), //refid,
-            NtpTimestamp::new(0, 0),   // reftime,
-            NtpTimestamp::new(0, 0),   //org
-            NtpTimestamp::new(0, 0),   //rec
-            NtpTimestamp::new(0, 0),   //xmt
-        );
+        let expected = NtpPacketHeader {
+            leap_indicator: NTP_LEAP_NO_WARNING,
+            version_number: NTP_VERSION_4,
+            mode: NTP_MODE_CLIENT,
+            stratum: Stratum::from(0),
+            poll: Poll::from(0),
+            precision: Precision::from(0),
+            rootdelay: NtpShort::new(0, 0),
+            rootdisp: NtpShort::new(0, 0),
+            refid: RefId::from([0, 0, 0, 0]),
+            reftime: NtpTimestamp::new(0, 0),
+            org: NtpTimestamp::new(0, 0),
+            rec: NtpTimestamp::new(0, 0),
+            xmt: NtpTimestamp::new(0, 0),
+        };
 
         assert_eq!(packet, expected);
     }
@@ -290,21 +256,21 @@ mod tests {
 
         let (packet, _) = NtpPacketHeader::try_read_from_bytes(&bytes).unwrap();
 
-        let expected = NtpPacketHeader::new(
-            NTP_LEAP_NO_WARNING, //leap_indicator,
-            NTP_VERSION_4,
-            NTP_MODE_CLIENT,
-            Stratum::from(1),
-            Poll::from(6),
-            Precision::from(-18),
-            NtpShort::new(1, 0),         //rootdelay
-            NtpShort::new(0, 100),       //rootdisp
-            RefId::from([1, 2, 3, 4]),   //refid,
-            NtpTimestamp::new(100, 500), // reftime,
-            NtpTimestamp::new(200, 200), //org
-            NtpTimestamp::new(50, 100),  //rec
-            NtpTimestamp::new(10, 1000), //xmt
-        );
+        let expected = NtpPacketHeader {
+            leap_indicator: NTP_LEAP_NO_WARNING,
+            version_number: NTP_VERSION_4,
+            mode: NTP_MODE_CLIENT,
+            stratum: Stratum::from(1),
+            poll: Poll::from(6),
+            precision: Precision::from(-18),
+            rootdelay: NtpShort::new(1, 0),
+            rootdisp: NtpShort::new(0, 100),
+            refid: RefId::from([1, 2, 3, 4]),
+            reftime: NtpTimestamp::new(100, 500),
+            org: NtpTimestamp::new(200, 200),
+            rec: NtpTimestamp::new(50, 100),
+            xmt: NtpTimestamp::new(10, 1000),
+        };
 
         assert_eq!(packet, expected);
     }
