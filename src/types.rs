@@ -253,6 +253,14 @@ impl NtpShort {
     pub fn new(seconds: u16, fraction: u16) -> Self {
         Self(((seconds as u32) << 16) | (fraction as u32))
     }
+
+    pub fn seconds(&self) -> u16 {
+        (self.0 >> 16) as u16
+    }
+
+    pub fn fraction(&self) -> u16 {
+        self.0 as u16
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -261,6 +269,14 @@ pub struct NtpTimestamp(u64);
 impl NtpTimestamp {
     pub fn new(seconds: u32, fraction: u32) -> Self {
         Self(((seconds as u64) << 32) | (fraction as u64))
+    }
+
+    pub fn seconds(&self) -> u32 {
+        (self.0 >> 32) as u32
+    }
+
+    pub fn fraction(&self) -> u32 {
+        self.0 as u32
     }
 }
 

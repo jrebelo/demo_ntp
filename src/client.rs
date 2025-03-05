@@ -7,10 +7,7 @@ use crate::{
         NTP_MODE_CLIENT, NTP_VERSION_4,
     },
 };
-use std::{
-    net::UdpSocket,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::{net::UdpSocket, time::UNIX_EPOCH};
 
 pub struct NtpClientBuilder {
     udp_socket: UdpSocket,
@@ -60,7 +57,7 @@ impl NtpClient {
             .try_write_to_bytes(&mut buffer)
             .unwrap();
 
-        let send_time = std::time::SystemTime::now()
+        let client_transmission_time = std::time::SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap();
 
@@ -69,15 +66,18 @@ impl NtpClient {
             .unwrap();
 
         let (recv_size, _) = self.udp_socket.recv_from(&mut buffer).unwrap();
-        std::time::SystemTime::now()
+        let client_reception_time = std::time::SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap();
         let (packet, _) = NtpPacketHeader::try_read_from_bytes(&buffer[..recv_size]).unwrap();
 
         let server_transmission_time = packet.xmt;
         let server_reception_time = packet.rec;
-        println!("Received NTP response {:?}", packet);
 
-        todo!()
+        (((server_reception_time.seconds() as u64 - JAN_1970) as i64
+            - client_transmission_time.as_secs() as i64)
+            + ((server_transmission_time.seconds() as u64 - JAN_1970) as i64
+                - client_reception_time.as_secs() as i64))
+            / 2
     }
 }
