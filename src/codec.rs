@@ -37,6 +37,7 @@ impl TryWriteToBytes for u8 {
     type Error = &'static str;
 
     fn try_write_to_bytes(&self, bytes: &mut [u8]) -> Result<usize, Self::Error> {
+        #[allow(clippy::len_zero)]
         if bytes.len() < 1 {
             return Err("Buffer too small");
         }
@@ -50,6 +51,7 @@ impl<'a> TryReadFromBytes<'a> for u8 {
     type Error = &'static str;
 
     fn try_read_from_bytes(bytes: &'a [u8]) -> Result<(Self, usize), Self::Error> {
+        #[allow(clippy::len_zero)]
         if bytes.len() < 1 {
             return Err("Buffer too small");
         }
@@ -61,6 +63,7 @@ impl TryWriteToBytes for i8 {
     type Error = &'static str;
 
     fn try_write_to_bytes(&self, bytes: &mut [u8]) -> Result<usize, Self::Error> {
+        #[allow(clippy::len_zero)]
         if bytes.len() < 1 {
             return Err("Buffer too small");
         }
@@ -77,6 +80,7 @@ impl<'a> TryReadFromBytes<'a> for i8 {
     type Error = &'static str;
 
     fn try_read_from_bytes(bytes: &'a [u8]) -> Result<(Self, usize), Self::Error> {
+        #[allow(clippy::len_zero)]
         if bytes.len() < 1 {
             return Err("Buffer too small");
         }

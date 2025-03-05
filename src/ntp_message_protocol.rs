@@ -25,10 +25,11 @@ impl TryWriteToBytes for NtpPacketHeader {
 
     fn try_write_to_bytes(&self, bytes: &mut [u8]) -> Result<usize, Self::Error> {
         let mut total_bytes = 0;
-        if bytes.len() < 1 {
+        if bytes.is_empty() {
             return Err("Not enough space in buffer");
         }
-        bytes[0] = (u8::from(self.leap_indicator) << 6) + (u8::from(self.version_number) << 3)
+        bytes[0] = (u8::from(self.leap_indicator) << 6)
+            | (u8::from(self.version_number) << 3)
             | u8::from(self.mode);
 
         total_bytes += 1;
@@ -59,7 +60,7 @@ impl<'a> TryReadFromBytes<'a> for NtpPacketHeader {
     fn try_read_from_bytes(bytes: &'a [u8]) -> Result<(Self, usize), Self::Error> {
         let mut total_bytes = 0;
 
-        if bytes.len() < 1 {
+        if bytes.is_empty() {
             return Err("Not enough space in buffer");
         }
         let leap_indicator = Leap::try_from((bytes[0] & 0b11_000_000) >> 6)?;
